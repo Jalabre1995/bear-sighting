@@ -132,8 +132,18 @@ function Search(){
       radius: 200 + 1000,
     },
   });
-
-  return < Combobox onSelect={() => {console.log(address)}}>
+////Here we are displaying the serach suggestions////
+  return < Combobox onSelect={() => {
+    console.log(address);
+  }}
+  /////Inserting the Combobox Input, this is going to take in the vlaue in the Search function and its going to wait for the change of the event. 
+  >
+    <ComboboxInput value ={value} onChange={(e) =>{
+      setValue(e.target.value);
+      }}
+      disabled = {!ready}
+      placeholder= 'Enter an address'
+      />
   
   </Combobox>
 }
