@@ -8,7 +8,7 @@ import {
   InfoWindow,
 } from '@react-google-maps/api';
 import { formatRelative } from 'date-fns';
-import usePlacedAutoComplete, {getGeocode,getLatLng,} from 'use-places-autocomplete';
+import usePlacesAutocomplete, {getGeocode,getLatLng,} from 'use-places-autocomplete';
 import {Combobox,ComboboxInput,ComboboxPopover,ComboboxList,ComboboxOption} from '@reach/combobox';
 import '@reach/combobox/styles.css';
 import mapStyles from './mapStyles';
@@ -133,7 +133,9 @@ function Search(){
     },
   });
 ////Here we are displaying the serach suggestions////
-  return < Combobox onSelect={() => {
+  return(
+  <div class= 'search'>
+   < Combobox onSelect={(address) => {
     console.log(address);
   }}
   /////Inserting the Combobox Input, this is going to take in the vlaue in the Search function and its going to wait for the change of the event. 
@@ -144,6 +146,11 @@ function Search(){
       disabled = {!ready}
       placeholder= 'Enter an address'
       />
+      <ComboboxPopover>
+        {status === 'OK' && data.map(({id, description}) =><ComboboxOption key={id} value={description} /> )}
+      </ComboboxPopover>
   
   </Combobox>
+  </div>
+  );
 }
