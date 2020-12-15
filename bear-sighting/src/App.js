@@ -72,6 +72,7 @@ export default function App() {
           ⛺
         </span>
       </h1>
+      <Search />
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={8}
@@ -119,4 +120,20 @@ export default function App() {
       </GoogleMap>
     </div>
   );
+}
+
+function Search(){
+  ///This is where we are going to set up the autocomplete///
+  ///So when it is searching its goign to prefer places that ar enear the user////
+  const{ready, value,suggestions:{status, data}, setValue, clearSuggestion,} = usePlacesAutocomplete({
+    requestOptions: {
+      location: {lat: () => 43.653225, lng: () => -79.383186 },
+      /// The span of the area will be 200km, but in the documentation it takes it by using meters. So we did 200 * 1000 to get 200,000km 
+      radius: 200 + 1000,
+    },
+  });
+
+  return < Combobox onSelect={() => {console.log(address)}}>
+  
+  </Combobox>
 }
