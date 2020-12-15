@@ -66,7 +66,12 @@ export default function App() {
 
   return (
     <div>
-      <h1>Bears</h1>
+      <h1>
+        Bears{''}
+        <span role='img' aria-label='tent'>
+          ⛺
+        </span>
+      </h1>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={8}
