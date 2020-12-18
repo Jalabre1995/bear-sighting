@@ -78,6 +78,7 @@ export default function App() {
         </span>
       </h1>
       <Search panTo ={panTo}/>
+      <Locate panto= {panTo} />
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={8}
@@ -127,10 +128,21 @@ export default function App() {
   );
 }
 
+function Locate({panTo}){
+  return(
+  <button className = 'locate' onClick={() =>{
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position);
+    }, () => null, options);
+  }}><img src= "compass.svg" alt ='compass- locate me'/>
+  </button>
+  );
+}
+
 function Search({panTo}){
   ///This is where we are going to set up the autocomplete///
   ///So when it is searching its goign to prefer places that ar enear the user////
-  const{ready, value,suggestions:{status, data}, setValue, clearSuggestion,} = usePlacesAutocomplete({
+  const{ready, value,suggestions:{status, data}, setValue, clearSuggestions,} = usePlacesAutocomplete({
     requestOptions: {
       location: {lat: () => 43.653225, lng: () => -79.383186 },
       /// The span of the area will be 200km, but in the documentation it takes it by using meters. So we did 200 * 1000 to get 200,000km 
@@ -142,6 +154,9 @@ function Search({panTo}){
     ///Going to add a async to return a promise. The promise is going to wait until Geocode for the address is entered and return the lat and lng.
   <div class= 'search'>
    < Combobox onSelect={async(address) => {
+     setValue(address,false);
+     //When a user selects an address, we are going to call the setValue to be false.
+     clearSuggestions()
      try{
        const results = await getGeocode({address});
        const{lat, lng} = await getLatLng(results[0]);
@@ -160,7 +175,10 @@ function Search({panTo}){
       placeholder= 'Enter an address'
       />
       <ComboboxPopover>
-        {status === 'OK' && data.map(({id, description}) =><ComboboxOption key={id} value={description} /> )}
+      <ComboboxList>
+        {status === 'OK' &&
+         data.map(({id, description}) =><ComboboxOption key={id} value={description} /> )}
+         </ComboboxList>
       </ComboboxPopover>
   
   </Combobox>
