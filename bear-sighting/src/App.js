@@ -59,6 +59,11 @@ export default function App() {
   const onMapLoad = React.useCallback((map) => {
     mapRef.current = map;
   }, []);
+  const panTo = React.useCallback(({lat, lng}) => {
+    ////Going to access the google Maps ref and we are going to pass panTo as a prop into the function  
+    mapRef.current.panTo({lat, lng});
+    mapRef.current.setZoom(14);
+  }, []);
 
   ///Create some if statements if there was an load error////
   if (loadError) return 'Error loading Maps';
@@ -72,7 +77,7 @@ export default function App() {
           ⛺
         </span>
       </h1>
-      <Search />
+      <Search panTo ={panTo}/>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={8}
@@ -122,7 +127,7 @@ export default function App() {
   );
 }
 
-function Search(){
+function Search({panTo}){
   ///This is where we are going to set up the autocomplete///
   ///So when it is searching its goign to prefer places that ar enear the user////
   const{ready, value,suggestions:{status, data}, setValue, clearSuggestion,} = usePlacesAutocomplete({
@@ -134,8 +139,16 @@ function Search(){
   });
 ////Here we are displaying the serach suggestions////
   return(
+    ///Going to add a async to return a promise. The promise is going to wait until Geocode for the address is entered and return the lat and lng.
   <div class= 'search'>
-   < Combobox onSelect={(address) => {
+   < Combobox onSelect={async(address) => {
+     try{
+       const results = await getGeocode({address});
+       const{lat, lng} = await getLatLng(results[0]);
+       panTo({lat,lng});
+     }catch(error){
+       console.log('error')
+     }
     console.log(address);
   }}
   /////Inserting the Combobox Input, this is going to take in the vlaue in the Search function and its going to wait for the change of the event. 
